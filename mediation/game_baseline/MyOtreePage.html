@@ -1,0 +1,43 @@
+{{ block content }}
+    <table class="table" style="text-align:center">
+        <caption style="text-align: center"></caption>
+    <tbody>
+        <tr>
+            <td><strong>Your action</strong></td>
+            <td><strong>The other person's action</strong></td>
+            <td><strong>Your payoff</strong></td>
+            <td><strong>The other person's payoff</strong></td>
+        </tr>
+        <tr>
+             <td>H</td>
+             <td>H</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+        </tr>
+        <tr>
+            <td>H</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>H</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+        </tr>
+    </tbody>
+    </table>
+    <br>
+
+    {{ include_sibling 'ChatPage.html' }}
+
+    <br>
+    {{ next_button }}
+{{ endblock }}

@@ -1,0 +1,18 @@
+{{ block title }}
+    Results
+{{ endblock }}
+
+{{ block content }}
+    <table class="table">
+        <tr>
+            <td>Your decision: {{ player.is_coordinated }}</td>
+            <td>Your payoff: {{ player.payoff }}</td>
+        </tr>
+        <tr>
+            <td>The other person's decision: {{ partner.is_coordinated }}</td>
+            <td>The other person's payoff: {{ partner.payoff }}</td>
+        </tr>
+    </table>
+    <br>
+    {{ next_button }}
+{{ endblock }}

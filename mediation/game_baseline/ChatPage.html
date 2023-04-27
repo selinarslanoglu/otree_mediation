@@ -1,0 +1,114 @@
+{{ block content }}
+<br>
+    <table class="table" style="text-align:center">
+        <caption style="text-align: center"></caption>
+    <tbody>
+        <tr>
+            <td><strong>Your action</strong></td>
+            <td><strong>The other person's action</strong></td>
+            <td><strong>Your payoff</strong></td>
+            <td><strong>The other person's payoff</strong></td>
+        </tr>
+        <tr>
+             <td>H</td>
+             <td>H</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+        </tr>
+        <tr>
+            <td>H</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>H</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+        </tr>
+    </tbody>
+    </table>
+<br>
+{{ chat }}
+<br>
+{{ next_button }}
+
+<style>
+    .otree-chat {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 0 0 0 0;
+    }
+    .otree-chat__messages {
+        height: 250px;
+        overflow: auto;
+        background: #eee;
+        margin: 2px 0 5px 0;
+    }
+    .otree-chat__nickname {
+        display: inline-block;
+        color: #ff8000;
+        width: 150px;
+        font-weight: bolder;
+    }
+    .otree-chat__input {
+        width: calc(100% - 310px);
+    }
+    .otree-chat__btn-send {
+        width: 150px;
+    }
+
+
+</style>
+
+<script>
+    const element = document.getElementsByClassName('otree-chat')[0];
+    const classes = element.className;
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Leave Chat";
+    btn.style.width = '150px'
+    btn.type = 'button'
+    element.appendChild(btn);
+
+    function liveRecv(data) {
+        console.log(data);
+        if ('leaveChatOffer' in data) {
+            var leaveChatOffer = data['leaveChatOffer']
+            if (leaveChatOffer === true) {
+                if (confirm('Accept or Reject') == true) {
+                    liveSend({'leaveChatResponse': true})
+                } else {
+                    liveSend({'leaveChatResponse': false})
+                }
+            }
+        } else if ('leaveChatResponse' in data) {
+            var leaveChatResponse = data['leaveChatResponse']
+            if (leaveChatResponse === true) {
+                btn.disabled = false;
+                liveSend({'leaveChatResponse': true})
+            } else {
+                btn.disabled = false;
+            }
+        } else if ('finished' in data) {
+            document.getElementById('form').submit();
+        }
+    }
+
+
+    btn.onclick = function () {
+        btn.disabled = true;
+        liveSend({'leaveChatOffer': true});
+    }
+
+</script>
+
+{{ endblock }}
+

@@ -1,0 +1,15 @@
+{{ block content }}
+    <p>
+        Please answer the following questions.
+    </p>
+    <br>
+    {% formfield player.q1 %}
+    <br>
+    {% formfield player.q2 %}
+    <br>
+    {% formfield player.gender %}
+    <br>
+    {% formfield player.department %}
+    <br>
+    {{ next_button }}
+{{ endblock }}

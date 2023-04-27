@@ -1,0 +1,120 @@
+{{ block content }}
+
+<style>
+    .tab {
+        display: none;
+    }
+</style>
+
+<div class="tab">
+    <h5>Instructions</h5>
+    <br>
+    <p style="text-align: justify;">
+        In this experiment, you will be randomly placed into a group of two player and asked to make a decision. Everyone
+        in your group has received the exact same instructions. However, it may be that people that are not in your group
+        will participate in a different experiment.
+
+    <p style="text-align: justify;">
+        There will be one round in this experiment. In this round, you and the person you are paired with will communicate
+        via a chat box and simultaneously choose one of two actions, H or L. The payoff you earn depends on
+        both your action and the action of the person you are paired with.
+    </p>
+
+    <p style="text-align: justify;">
+        If the person you are matched with chooses H, and you choose H, both of you earn 0 points. If the person you
+        are matched with chooses L, and you choose H, you earn 200 points. whereas the other person earns 50 points.
+        If the person you are matched with chooses H, and you choose L, you earn 50 points, whereas the other person
+        earns 200 points. If the person you are matched with chooses L, and you choose L, you both earn 75 points.
+        Table 1 given below summarizes the payoffs you and the other person you are matched with can get.
+    </p>
+
+    <table class="table" style="text-align:center">
+        <caption style="text-align: center"></caption>
+        <tr>
+            <td><strong>Your action</strong></td>
+            <td><strong>The other person's action</strong></td>
+            <td><strong>Your payoff</strong></td>
+            <td><strong>The other person's payoff</strong></td>
+        </tr>
+        <tr>
+             <td>H</td>
+             <td>H</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+             <td>{{C.PAYOFF_MUTUAL_H}}</td>
+        </tr>
+        <tr>
+            <td>H</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>H</td>
+            <td>{{C.PAYOFF_L_WHEN_HL}}</td>
+            <td>{{C.PAYOFF_H_WHEN_HL}}</td>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>L</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+            <td>{{C.PAYOFF_MUTUAL_L}}</td>
+        </tr>
+    </table>
+    <br>
+    <p>
+        <button type="button" class="btn btn-primary btn-tab" data-offset="1">Next</button>
+    </p>
+</div>
+<div class="tab">
+    <h5>Practice Questions</h5>
+    <br>
+    <p style="text-align: justify;">
+        Before you communicate and make a decision, you are asked to answer the following questions to ensure that the
+        instructions are clear to you.
+    </p>
+    <table class="table">
+    {{ for field in form }}
+        <tr>
+            <td>{{ field.label }}</td>
+            <td>{{ field }}</td>
+        </tr>
+    {{ endfor }}
+    </table>
+    <br>
+    <p>
+        <button type="button" class="btn btn-primary btn-tab" data-offset="-1">Previous</button>
+        <button class="btn btn-primary">Next</button>
+    </p>
+</div>
+
+<script>
+    let activeTab = js_vars.errors.length === 0 ? 0 : 1;
+    if (activeTab === 1) {
+        document.getElementsByClassName("otree-form-errors")[0].firstChild.nodeValue =
+            "There are incorrect answers. Please read the instructions again.";
+
+            js_vars.errors.forEach(function (item, index) {
+                const input = document.getElementById('id_' + item);
+                input.style.backgroundColor = '#F8A2A2FF';
+            });
+    }
+
+    function showCurrentTabOnly() {
+        let tabIndex = 0;
+        for (let tab of document.getElementsByClassName('tab')) {
+            tab.style.display = tabIndex === activeTab ? 'block' : 'none';
+            tabIndex++;
+        }
+    }
+
+    showCurrentTabOnly();
+    for (let btn of document.getElementsByClassName('btn-tab')) {
+        btn.onclick = function () {
+            activeTab += parseInt(btn.dataset.offset);
+            showCurrentTabOnly();
+        }
+    }
+</script>
+
+{{ endblock }}

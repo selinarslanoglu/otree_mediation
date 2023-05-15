@@ -69,6 +69,19 @@
 </style>
 
 <script>
+
+    const msgContainer = document.getElementsByClassName('otree-chat__messages')[0];
+    msgContainer.addEventListener('DDNodeInserted', function () {
+        console.log("called");
+        const messages = msgContainer.childNodes;
+        for (i = 0; i < messages.length; i++) {
+            const nickname = messages[i].childNodes[0].innerHTML;
+            if(nickname.includes("Participant 1")) {
+                messages[i].childNodes[0].style.color = '#000000'
+            }
+        }
+    });
+
     const element = document.getElementsByClassName('otree-chat')[0];
     const classes = element.className;
 

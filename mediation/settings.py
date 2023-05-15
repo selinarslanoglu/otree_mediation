@@ -10,7 +10,7 @@ NUM_PARTICIPANTS = 4
 SESSION_CONFIGS = [
     dict(
         name='baseline',
-        app_sequence=['part1', 'game_baseline', 'goodbye'],
+        app_sequence=['game_baseline'],
         num_demo_participants=NUM_PARTICIPANTS,
         num_participants=NUM_PARTICIPANTS,
         treatment='baseline'

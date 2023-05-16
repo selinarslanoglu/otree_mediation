@@ -260,11 +260,11 @@
 
 
     btn.onclick = function () {
-        if (btn.innerText === 'Leave Chat') {
+        if (btn.innerText === 'Leave') {
             btn.innerText = "Stay";
             liveSend({'leaveChatOffer': true});
         } else {
-            btn.innerText = "Leave Chat";
+            btn.innerText = "Leave";
             liveSend({'leaveChatOffer': false});
         }
     }

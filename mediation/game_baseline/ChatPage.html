@@ -245,15 +245,7 @@
                 buttonSend.click();
                 input.value = '';
             }
-        } else if ('leaveChatResponse' in data) {
-            var leaveChatResponse = data['leaveChatResponse']
-            if (leaveChatResponse === true) {
-                btn.disabled = false;
-                liveSend({'leaveChatResponse': true})
-            } else {
-                btn.disabled = false;
-            }
-        } else if ('finished' in data) {
+        } else if ('finished' in data && data['finished']) {
             document.getElementById('form').submit();
         }
     }

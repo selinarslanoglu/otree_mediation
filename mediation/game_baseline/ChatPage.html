@@ -42,14 +42,28 @@
 
 <style>
     .otree-chat {
-        border: 1px solid #ccc;
-        padding: 10px;
+        padding: 20px;
         margin: 0 0 0 0;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        align-content: space-evenly;
+
+        z-index: 10;
+        box-sizing: border-box;
+        border-radius: 1rem;
+        background: #F7F7F7;
+        border: none;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
     }
     .otree-chat__messages {
-        height: 250px;
+        width: 100%;
+        height: 400px;
         overflow: auto;
-        background: #eee;
+        background: #F7F7F7;
         margin: 2px 0 5px 0;
     }
     .otree-chat__nickname {
@@ -59,43 +73,160 @@
         font-weight: bolder;
     }
     .otree-chat__input {
-        width: calc(100% - 310px);
+        height: 34px;
+        border:none;
+        background-image:none;
+        background-color:white;
+        border-radius: 8px;
+        flex-grow: 3;
+        box-shadow:0px 0px 5px 0px rgba(0, 0, 0, 0.4);
+        font-family: Red hat Display, sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.025em;
+        margin-right: 10px;
+        margin-top: 20px;
+        padding: 0.5rem 1rem;
+    }
+    .otree-chat__input::placeholder {
+        opacity: 0.5;
+        color: #999;
+    }
+    .otree-chat__input:focus {
+        outline: none !important;
+        border: 1px solid #1cbd8b;
+        box-shadow: 0 0 5px rgba(28, 189, 139, 0.4);
     }
     .otree-chat__btn-send {
-        width: 150px;
+        margin-top: 20px;
+        font-weight: bold;
+        background-color: #1cbd8b;
+        color: white;
+        border: none;
+        height: 38px;
+        flex-grow: 2;
+        margin-right: 10px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        box-shadow:0px 0px 8px 0px rgba(0, 0, 0, 0.4);
+        opacity: 0.7;
+        transition: all .1s;
     }
+    .otree-chat__btn-send:active {transform: scale(0.95);}
+    .otree-chat__btn-send:hover {opacity: 1;}
 
 
 </style>
 
 <script>
-
+    const player_id = js_vars.my_id;
     const msgContainer = document.getElementsByClassName('otree-chat__messages')[0];
     msgContainer.addEventListener('DOMNodeInserted', function () {
-        console.log("called");
         const messages = msgContainer.childNodes;
         for (i = 0; i < messages.length; i++) {
-            const nickname = messages[i].childNodes[0].innerHTML;
-            if (nickname.includes("Participant 1")) {
-                messages[i].childNodes[0].style.color = '#000000';
+            let nickname = messages[i].childNodes[0].innerHTML;
+            if (nickname) {
+                messages[i].id = messages[i].childNodes[0].textContent
+                messages[i].childNodes[0].textContent = "";
+            } else {
+                nickname = messages[i].id;
+            }
+
+            const msg = messages[i].childNodes[1].textContent
+            if (msg === 'auto_generated_msg') {
+                messages[i].id = messages[i].id + '_agm';
+                messages[i].childNodes[1].textContent = '';
+            }
+
+            if (messages[i].id.endsWith('_agm')) {
+                let leaveMsg;
+                if (messages[i].id.includes(player_id)) {
+                    leaveMsg = 'Other player wants to leave the chat';
+                } else {
+                    leaveMsg = 'You want to leave the chat';
+                }
+                messages[i].childNodes[1].textContent = leaveMsg;
+                messages[i].childNodes[0].style.width = "auto";
+                messages[i].style.boxSizing = 'border-box';
+                messages[i].style.fontSize = '0.8rem'
+                messages[i].style.background = '#EEE'
+                messages[i].style.padding = '0.25rem 1rem'
+                messages[i].style.borderRadius = '20px'
+                messages[i].style.width = 'fit-content'
+                messages[i].style.margin = '0 auto'
+                messages[i].style.marginTop = '2px'
+            } else {
+                messages[i].style.boxSizing = 'border-box';
+                messages[i].style.minHeight = '2rem';
+                messages[i].style.padding = '5px 5px 5px 5px';
+                messages[i].style.maxWidth = '50%';
+                messages[i].style.width = 'fit-content';
+                messages[i].style.fontWeight = '400';
+                messages[i].style.lineHeight = '30px';
+                messages[i].style.letterSpacing = '0.01em';
+                messages[i].style.fontFamily = 'Red hat Display, sans-serif';
+                messages[i].childNodes[0].style.width = "auto";
+                messages[i].childNodes[1].style.padding = '10px 10px 10px 10px';
+
+                if (nickname.includes(player_id)) {
+                    messages[i].style.background = '#0074cc';
+                    messages[i].style.borderRadius = '16px 16px 0 16px';
+                    messages[i].style.margin = '10px 10px 10px auto';
+                    messages[i].childNodes[1].style.color = "white";
+                    messages[i].style.boxShadow = '3px 3px 7px rgba(0, 0, 0, 0.5)';
+                } else {
+                    messages[i].style.background = '#FFFFFF';
+                    messages[i].style.borderRadius = '16px 16px 16px 0px';
+                    messages[i].style.margin = 'auto 10px 10px 10px';
+                    messages[i].style.boxShadow = '-3px 3px 7px rgba(0, 0, 0, 0.3)';
+                }
             }
         }
     });
 
     const element = document.getElementsByClassName('otree-chat')[0];
+    const buttonSend = document.getElementsByClassName('otree-chat__btn-send')[0];
+    const input = document.getElementsByClassName('otree-chat__input')[0];
+    input.placeholder = 'Type your message here...'
     const classes = element.className;
 
     let btn = document.createElement("button");
     btn.innerHTML = "Leave Chat";
-    btn.style.width = '150px'
     btn.type = 'button'
+    btn.setAttribute("style", "font-weight: bold;\n" +
+        "        background-color: #FF6766;\n" +
+        "        margin-top: 20px;\n" +
+        "        color: white;\n" +
+        "        border: none;\n" +
+        "        height: 38px;\n" +
+        "        flex-grow: 1;\n" +
+        "        margin-right: 10px;\n" +
+        "        box-sizing: border-box;\n" +
+        "        border-radius: 8px;\n" +
+        "        box-shadow:0px 0px 8px 0px rgba(0, 0, 0, 0.4);\n" +
+        "        opacity: 0.7;\n" +
+        "        transition: all .1s;");
     element.appendChild(btn);
+    btn.onmouseenter = function() {
+        this.style.opacity = 1;
+    }
+    btn.onmouseleave = function() {
+        this.style.opacity = 0.7;
+    }
+    btn.onmousedown = function() {
+        this.style.transform = "scale(0.95)";
+    }
+    btn.onmouseup = function() {
+        this.style.transform = "scale(1.0)";
+    }
 
     function liveRecv(data) {
         console.log(data);
         if ('leaveChatOffer' in data) {
             var leaveChatOffer = data['leaveChatOffer']
             if (leaveChatOffer === true) {
+                input.value = 'auto_generated_msg';
+                buttonSend.click();
+                input.value = '';
                 if (confirm('Accept or Reject') == true) {
                     liveSend({'leaveChatResponse': true})
                 } else {
@@ -117,7 +248,7 @@
 
 
     btn.onclick = function () {
-        btn.disabled = true;
+        //btn.disabled = true;
         liveSend({'leaveChatOffer': true});
     }
 

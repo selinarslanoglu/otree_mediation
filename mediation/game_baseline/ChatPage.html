@@ -103,7 +103,7 @@
         color: white;
         border: none;
         height: 38px;
-        flex-grow: 2;
+        flex-grow: 1;
         margin-right: 10px;
         box-sizing: border-box;
         border-radius: 8px;
@@ -132,18 +132,30 @@
             }
 
             const msg = messages[i].childNodes[1].textContent
-            if (msg === 'auto_generated_msg') {
-                messages[i].id = messages[i].id + '_agm';
+            if (msg === 'auto_generated_msg_true') {
+                messages[i].id = messages[i].id + '_agm_true';
+                messages[i].childNodes[1].textContent = '';
+            } else if (msg === 'auto_generated_msg_false') {
+                messages[i].id = messages[i].id + '_agm_false';
                 messages[i].childNodes[1].textContent = '';
             }
 
-            if (messages[i].id.endsWith('_agm')) {
+            if (messages[i].id.endsWith('_agm_true') || messages[i].id.endsWith('_agm_false')) {
                 let leaveMsg;
-                if (messages[i].id.includes(player_id)) {
-                    leaveMsg = 'Other player wants to leave the chat';
+                if (messages[i].id.endsWith('_agm_true')) {
+                    if (messages[i].id.includes(player_id)) {
+                        leaveMsg = 'Other player wants to leave the chat';
+                    } else {
+                        leaveMsg = 'You want to leave the chat';
+                    }
                 } else {
-                    leaveMsg = 'You want to leave the chat';
+                    if (messages[i].id.includes(player_id)) {
+                        leaveMsg = 'Other player wants to stay in the chat';
+                    } else {
+                        leaveMsg = 'You want to stay in the chat';
+                    }
                 }
+
                 messages[i].childNodes[1].textContent = leaveMsg;
                 messages[i].childNodes[0].style.width = "auto";
                 messages[i].style.boxSizing = 'border-box';
@@ -153,15 +165,16 @@
                 messages[i].style.borderRadius = '20px'
                 messages[i].style.width = 'fit-content'
                 messages[i].style.margin = '0 auto'
-                messages[i].style.marginTop = '2px'
+                messages[i].style.marginTop = '1rem'
+                messages[i].style.marginBottom = '1rem'
             } else {
                 messages[i].style.boxSizing = 'border-box';
                 messages[i].style.minHeight = '2rem';
-                messages[i].style.padding = '5px 5px 5px 5px';
-                messages[i].style.maxWidth = '50%';
+                messages[i].style.padding = '14px 9px 14px 9px';
+                messages[i].style.maxWidth = '45%';
                 messages[i].style.width = 'fit-content';
                 messages[i].style.fontWeight = '400';
-                messages[i].style.lineHeight = '30px';
+                messages[i].style.lineHeight = '17px';
                 messages[i].style.letterSpacing = '0.01em';
                 messages[i].style.fontFamily = 'Red hat Display, sans-serif';
                 messages[i].childNodes[0].style.width = "auto";
@@ -190,7 +203,7 @@
     const classes = element.className;
 
     let btn = document.createElement("button");
-    btn.innerHTML = "Leave Chat";
+    btn.innerText = "Leave";
     btn.type = 'button'
     btn.setAttribute("style", "font-weight: bold;\n" +
         "        background-color: #FF6766;\n" +
@@ -224,14 +237,13 @@
         if ('leaveChatOffer' in data) {
             var leaveChatOffer = data['leaveChatOffer']
             if (leaveChatOffer === true) {
-                input.value = 'auto_generated_msg';
+                input.value = 'auto_generated_msg_true';
                 buttonSend.click();
                 input.value = '';
-                if (confirm('Accept or Reject') == true) {
-                    liveSend({'leaveChatResponse': true})
-                } else {
-                    liveSend({'leaveChatResponse': false})
-                }
+            } else {
+                input.value = 'auto_generated_msg_false';
+                buttonSend.click();
+                input.value = '';
             }
         } else if ('leaveChatResponse' in data) {
             var leaveChatResponse = data['leaveChatResponse']
@@ -248,8 +260,13 @@
 
 
     btn.onclick = function () {
-        //btn.disabled = true;
-        liveSend({'leaveChatOffer': true});
+        if (btn.innerText === 'Leave Chat') {
+            btn.innerText = "Stay";
+            liveSend({'leaveChatOffer': true});
+        } else {
+            btn.innerText = "Leave Chat";
+            liveSend({'leaveChatOffer': false});
+        }
     }
 
 </script>

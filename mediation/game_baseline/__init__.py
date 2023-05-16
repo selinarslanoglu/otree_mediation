@@ -87,7 +87,6 @@ class Results(Page):
     def vars_for_template(player: Player):
         return dict(partner=get_partner(player))
 
-
 class ChatPage(Page):
     @staticmethod
     def js_vars(player: Player):
@@ -96,10 +95,13 @@ class ChatPage(Page):
     @staticmethod
     def live_method(player: Player, data):
         partner = get_partner(player)
-        if 'leaveChatResponse' in data:
-            if data['leaveChatResponse'] == True:
+        if 'leaveChatOffer' in data:
+            leaveChatOffers[player.id_in_group] = data['leaveChatOffer']
+            leaveChatOffers[partner.id_in_group] = leaveChatOffers.get(partner.id_in_group, False)
+            if all(leaveChatOffer for leaveChatOffer in leaveChatOffers.values()):
                 return {0: dict(finished=True)}
         return {partner.id_in_group: data}
 
+leaveChatOffers = dict()
 
 page_sequence = [Introduction, ChatPage, Coordination, ResultsWaitPage, Results]
